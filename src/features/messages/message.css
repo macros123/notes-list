@@ -1,0 +1,39 @@
+.messageContainer {
+    cursor: pointer;
+    text-align: left;
+}
+
+.done {
+    text-decoration: line-through;
+}
+
+.gray {
+    color: gray;
+}
+
+.button {
+    cursor: pointer;
+    width: 100%;
+}
+
+.hide {
+    background-color: burlywood;
+}
+
+.delete {
+    background-color: thistle;
+}
+
+.inputes {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.flexHalf {
+    flex: 0 0 350px;
+}
+
+.flexButton {
+    flex: 0 0 100px;
+}

@@ -13,7 +13,6 @@ export function Counter() {
   const count = useSelector(selectCount);
   const dispatch = useDispatch();
   const [incrementAmount, setIncrementAmount] = useState('2');
-
   return (
     <div>
       <div className={styles.row}>
@@ -43,7 +42,7 @@ export function Counter() {
         <button
           className={styles.button}
           onClick={() =>
-            dispatch(incrementByAmount(Number(incrementAmount) || 0))
+            dispatch(incrementByAmount({value: Number(incrementAmount) || 0}))
           }
         >
           Add Amount
