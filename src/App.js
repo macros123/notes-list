@@ -1,11 +1,11 @@
 import React from 'react';
-import { Messages } from './features/messages/Messages';
+import Game from './features/game/Game';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <Messages />
+      <Game />
     </div>
   );
 }
