@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     openCard,
     gameStart,
-    selectState
+    selectState,
+    openCardAsync
   } from './gameSlice';
 
 export default function Card(props) {
@@ -12,10 +13,10 @@ export default function Card(props) {
 
     return <>
     <div 
-        className="Game-Card"
+        className={`Game-Card ${!props.element.isVisible && ' invisible'}`}
         onClick={() => {
-            dispatch(openCard(props.id));        
+            if (props.element.isVisible) dispatch(openCard(props.element.id));        
         }} >
-
+        {props.element.isShowing && props.element.id}
     </div></>
 }
