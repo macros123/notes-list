@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import { GAME_STATUSES } from './constants'
 
 const COUNT_OF_CARDS = 16;
@@ -20,15 +20,17 @@ for(let i = 0; i < COUNT_OF_CARDS; i+=2) {
     pairId: i
   })
 }
+const initialState = {
+  gameStatus: GAME_STATUSES.waiting,
+  cards: cards,
+  gameStarted: false,
+  openedCard: {},
+  pairLeft: COUNT_OF_CARDS/2
+}
 
 export const gameSlice = createSlice({
   name: 'game',
-  initialState: {
-    gameStatus: GAME_STATUSES.waiting,
-    cards: cards,
-    gameStarted: null,
-    openedCard: {}
-  },
+  initialState: initialState,
   reducers: {
     openCard: (state, action) => {
       switch (state.gameStatus) {
@@ -42,7 +44,12 @@ export const gameSlice = createSlice({
             state.cards[action.payload].isVisible = false;
             state.cards[state.openedCard.id].isVisible = false;
             state.cards[state.openedCard.id].isShowing = false;
-            state.gameStatus = GAME_STATUSES.gaming;
+            state.pairLeft--;
+            if (state.pairLeft === 0) {
+              state.gameStatus = GAME_STATUSES.finish;              
+            } else {
+              state.gameStatus = GAME_STATUSES.gaming;
+            }
           } else {
             state.gameStatus = GAME_STATUSES.twoCardOpened;
             state.cards[action.payload].isShowing = true;
@@ -50,6 +57,8 @@ export const gameSlice = createSlice({
           break;
         case GAME_STATUSES.waiting:
           state.cards[action.payload].isShowing = true;
+          break;
+        default:
           break;
       }
     },
@@ -66,8 +75,11 @@ export const gameSlice = createSlice({
       state.gameStatus = GAME_STATUSES.gaming;
     },
     gameStart: (state) => {
-        state.gameStarted = new dayjs().format();
+        state.cards = cards;
+        state.gameStarted = dayjs().format();
         state.gameStatus = GAME_STATUSES.gaming;
+        state.pairLeft = COUNT_OF_CARDS/2;
+        state.openedCard = {};
     }
   },
 });

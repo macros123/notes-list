@@ -2,10 +2,7 @@ import React from 'react'
 import './game.css'
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    openCard,
-    gameStart,
-    selectState,
-    openCardAsync
+    openCard
   } from './gameSlice';
 
 export default function Card(props) {
