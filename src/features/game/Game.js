@@ -7,18 +7,42 @@ import {
     closeCard,
     closeAllCards
   } from './gameSlice';
-import Card from './Card' 
-import { GAME_STATUSES } from './constants'
+import Card from './Card'  
+import { GAME_STATUSES } from './constants' 
 import {Timer} from './Timer' 
 
-export default function Game(props) {
+export default function Game() {
     const dispatch = useDispatch();
     const state = useSelector(selectState);
     const cards = state.cards || [];
+
+    /**
+     * handle click only for fast closing wrong two cards
+     */
+    const handleClickOnCard = () => {
+        if(state.gameStatus === GAME_STATUSES.twoCardOpened) {
+            clearTimeout(timer);
+            dispatch(closeAllCards());
+        }
+    } 
+
+    /**
+     * create cards
+     */
     const cardList = cards.map(
-        (element) => <Card element={element} key={element.id}/>
+        (element, index) => <Card 
+            element={element} 
+            key={element.id} 
+            click={handleClickOnCard}
+            numberInRow={index}            
+        />
     )
 
+    /**
+     * actial state of Game component
+     * timer - setTimeout function 
+     * isGameFinished
+     */
     const [timer, setTimer] = useState();
     const [isGameFinished, setIsGameFinished] = useState(false);
 
@@ -45,15 +69,18 @@ export default function Game(props) {
                 break;
         }
     }, [state.gameStatus])
+
     return <section className="gameContainer">
-        <div 
-            className="gameStartButton"
-            onClick={() => {
-                dispatch(gameStart())        
-            }} 
-        >
-            Start game
-        </div>
+        <div className="gameStartButtonContainer">    
+            <div 
+                className="gameStartButton"
+                onClick={() => {
+                    dispatch(gameStart())        
+                }} 
+            >
+                Start game
+            </div>
+        </div>  
         {state.gameStarted ? <Timer stop={isGameFinished} round={state.gameStarted}/> : <div className="gameTimerSpot" />}
         <div className="gameCardContainer">
             {cardList}

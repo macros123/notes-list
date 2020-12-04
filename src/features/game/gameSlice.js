@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import dayjs from 'dayjs';
-import { GAME_STATUSES } from './constants'
+import { GAME_STATUSES, shuffleArray } from './constants'
 
-const COUNT_OF_CARDS = 16;
+/**
+ * fill initial state of state tree
+ */
+const COUNT_OF_CARDS = 36;
 const cards = [];
 for(let i = 0; i < COUNT_OF_CARDS; i+=2) {
   cards.push({
@@ -32,6 +34,11 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState: initialState,
   reducers: {
+    /**
+     * open card by id
+     * action depends on game status
+     * @param id: number
+     */
     openCard: (state, action) => {
       switch (state.gameStatus) {
         case GAME_STATUSES.gaming:
@@ -40,10 +47,12 @@ export const gameSlice = createSlice({
           state.openedCard = state.cards[action.payload];
           break;
         case GAME_STATUSES.oneCardOpened:
-          if (action.payload === state.openedCard.pairId) {
+          if (state.cards[action.payload].id === state.openedCard.pairId) {
             state.cards[action.payload].isVisible = false;
-            state.cards[state.openedCard.id].isVisible = false;
-            state.cards[state.openedCard.id].isShowing = false;
+            state.cards.forEach((element) => {
+              if(element.id === state.openedCard.pairId || element.id === state.openedCard.id)
+                element.isVisible = false
+            })
             state.pairLeft--;
             if (state.pairLeft === 0) {
               state.gameStatus = GAME_STATUSES.finish;              
@@ -55,18 +64,22 @@ export const gameSlice = createSlice({
             state.cards[action.payload].isShowing = true;
           }
           break;
-        case GAME_STATUSES.waiting:
-          state.cards[action.payload].isShowing = true;
-          break;
         default:
           break;
       }
     },
+    /**
+     * close card by id
+     * @param id: number
+     */
     closeCard: (state, action) => {
       state.cards[action.payload].isShowing = false;
       state.openedCard = {};  
       state.gameStatus = GAME_STATUSES.gaming;   
     },
+    /**
+     * close all cards
+     */
     closeAllCards: (state) => {
       state.cards.forEach((element) => {
         element.isShowing = false;
@@ -74,9 +87,12 @@ export const gameSlice = createSlice({
       state.openedCard = {};
       state.gameStatus = GAME_STATUSES.gaming;
     },
+    /**
+     * game starter function
+     */
     gameStart: (state) => {
-        state.cards = cards;
-        state.gameStarted = dayjs().format();
+        state.cards = shuffleArray(cards);
+        state.gameStarted = Math.random().toString(36).substr(2, 9); //just unique id for new game
         state.gameStatus = GAME_STATUSES.gaming;
         state.pairLeft = COUNT_OF_CARDS/2;
         state.openedCard = {};
@@ -85,20 +101,6 @@ export const gameSlice = createSlice({
 });
 
 export const { openCard, gameStart, closeCard, closeAllCards } = gameSlice.actions;
-
-
-export const openCardAsync = amount => dispatch => {
-  dispatch(openCard(amount.id));
-  if (amount) {
-    setTimeout(() => {
-      dispatch(closeAllCards());
-    }, 2000);
-  } else {
-    setTimeout(() => {
-      dispatch(closeCard(amount.id));
-    }, 2000);
-  }
-};
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

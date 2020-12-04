@@ -1,12 +1,23 @@
-.Game-Card {
-    flex: 0 0 80px;
-    height: 80px;
-    background-color: grey;
+.gameCardButton {
+    flex: 0 0 70px;
+    height: 70px;
+    background: url(../icons/card-suit.png) no-repeat center / contain;
     cursor: pointer;
     margin: 5px;
     color: white;
+    border-radius: 6px;
+}
+.gameCardButton:hover,
+.gameStartButton:hover {
+    filter: drop-shadow(0px 0px 10px white)
 }
 
+.gameStartButtonContainer {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
 .gameCardContainer {
     display: flex;    
     flex-wrap: wrap;
@@ -14,20 +25,28 @@
 }
 
 .invisible {
-    border: 1px solid yellow;
+    visibility: hidden;
 }
-
+.gameCardOpened {
+    background: none;
+}
 .gameContainer {
-    width: 400px;
-    height: 450px;
-    background-color: darkseagreen;
+    width: 525px;
+    height: 700px;
+    background: url(../icons/backgorund.jpg) no-repeat center / contain;
 }
 .gameStartButton {
-    width: 100%;
+    margin: 12px auto 0 auto;
+    width: 100px;
     height: 30px;
     cursor: pointer;
-    background-color: lavender;
+    background-color: #cb3630;
+    border-radius: 6px;
+    font-weight: 600;
+    color: white;
 }
 .gameTimerSpot {
-    height: 30px;
+    height: 40px;
+    color: white;
+    font-size: 22px;
 }

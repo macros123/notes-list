@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import dayjs from 'dayjs'
 import './game.css'
 
 export function Timer(props) {
+    /**
+     * state of Timer component
+     * timer - value for stopwatch
+     * addSecond - function with setTimeout
+     */
     const [timer, setTimer] = useState(dayjs().set('minute', 0).set('second', 0));
-    const [timeO, setTimeO] = useState();
+    const addSecond = useRef(null);
+    
     useEffect(() => {
-        setTimer(dayjs().set('minute', 0).set('second', 0));
-        clearTimeout(timeO);
-        setTimeO(setInterval(() => {
-            console.log(timer.format());
-            setTimer(timer.add(1, 'second'));
-        }, 1000));
-    }, [props.round])
-
-
+        clearTimeout(addSecond.current);
+        if(!props.stop) {
+            setTimer(dayjs().set('minute', 0).set('second', 0));
+            addSecond.current = setInterval(() => {
+                setTimer(timer => timer.add(1, 'second'));
+            }, 1000);
+        }
+    }, [props.round, props.stop]);
 
     return <>
         <div className="gameTimerSpot">
-            {timer.format('mm:ss')}
+           {props.stop ? `Congratulation your time: ${timer.format('mm:ss')}. Play again?` : timer.format('mm:ss')}
         </div>
     </>
 }
