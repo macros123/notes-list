@@ -73,7 +73,7 @@ export const gameSlice = createSlice({
      * @param id: number
      */
     closeCard: (state, action) => {
-      state.cards[action.payload].isShowing = false;
+      state.cards.find(item => item.id === action.payload).isShowing = false;
       state.openedCard = {};  
       state.gameStatus = GAME_STATUSES.gaming;   
     },
